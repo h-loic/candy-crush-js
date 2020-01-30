@@ -6,6 +6,32 @@
   <link rel="stylesheet" href="style.css">
   <script src="script.js"></script>
 </head>
-<body>
+<body onload="initialiser_jeu()">
+	<div id="zoneDuJeu">
+		<div id="bouton">
+			<input type="button" name="test" id="newGame" value="New Game" onclick="set_progression(1)">
+			<input type="button" name="test" id="highScores" value="High scores" onclick="initialiser_jeu()">
+		</div>
+		<div id="texte">
+			<div id="nombreEssai">
+				<span id="texteNombreEssai">Tries Left :</span>
+				<span id="valeurNombreEssai"></span>
+			</div>
+			<div id="Score">
+				<span id="texteScore">Score :</span>
+				<span id="valeurScore"></span>
+			</div>
+		</div>
+
+		<div id="tableauDeJeu">
+			
+		</div>
+
+
+		<div id="BarDeProgression">
+	  		<div id="progressionBar"></div>
+	  		<div id="progressionPourcent"></div>
+		</div>
+	</div>
 </body>
 </html>

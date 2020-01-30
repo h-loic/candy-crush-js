@@ -7,3 +7,50 @@ body {
 	background-image:url(images/background.jpg);
 	background-size: 100%;
 }
+
+#zoneDuJeu {
+	width: 33%;
+	height: 100vh;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: red;
+}
+
+#bouton {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	height: 5%;
+}
+
+#newGame {
+	float: left;
+	margin-left: 20%;
+}
+
+#highScores {
+	float: right;
+	margin-right: 20%;
+}
+
+#texte {
+	display: block;
+}
+
+#barDeProgression {
+  width: 100%;
+  background-color: grey;
+}
+
+#progressionBar {
+  width: 1%;
+  height: 30px;
+  background-color: green;
+}
+
+#newGame {
+
+}
+
+#scores
