@@ -4,13 +4,12 @@
   <meta charset="utf-8">
   <title>Candy crush</title>
   <link rel="stylesheet" href="style.css">
-  <script src="script.js"></script>
 </head>
-<body onload="initialiser_jeu()">
+<body>
 	<div id="zoneDuJeu">
 		<div id="bouton">
-			<input type="button" name="test" id="newGame" value="New Game" onclick="set_progression(1)">
-			<input type="button" name="test" id="highScores" value="High scores" onclick="initialiser_jeu()">
+			<input type="button" name="test" id="newGame" value="New Game" href="#">
+			<input type="button" name="test" id="highScores" value="High scores" href="score">
 		</div>
 		<div id="texte">
 			<div id="nombreEssai">
@@ -23,15 +22,20 @@
 			</div>
 		</div>
 
-		<div id="tableauDeJeu">
-			
-		</div>
+		<table id="tableauDeJeu">
+				
+		</table>
 
 
-		<div id="BarDeProgression">
+		<div id="barDeProgression">
 	  		<div id="progressionBar"></div>
 	  		<div id="progressionPourcent"></div>
 		</div>
 	</div>
+
+	<script src="Bonbon.js"></script>
+	<script src="VueJeu.js"></script>
+	<script src="Jeu.js"></script>
+
 </body>
 </html>
