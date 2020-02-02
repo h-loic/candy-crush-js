@@ -24,6 +24,9 @@ var VueJeu = (function(){
         case 6 :
           img.src = "images/bonbonViolet.png";
           break;
+        default :
+          img.src = "";
+
       }
       img.style.width = "90%";
       img.style.width = "90%";
@@ -32,10 +35,11 @@ var VueJeu = (function(){
     }
 
     this.afficher_tableau_jeu = function(tableauJeu){
+      this.vider_tableau_jeu();
       let table = document.getElementById('tableauDeJeu');
       for (let i = 0; i < tableauJeu[0].length; i++){
         let ligne = document.createElement('tr');
-        for (let j = 0; j < tableauJeu[0].length; j++){
+        for (let j = 0; j < tableauJeu[1].length; j++){
           let cellule = document.createElement('td');
           cellule.appendChild(this.get_image_associer(tableauJeu[i][j]));
           ligne.appendChild(cellule);

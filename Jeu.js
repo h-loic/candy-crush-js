@@ -51,7 +51,6 @@
 
   function verifier_tableau(tableauJeu){
     if (tableauJeu.length == 0) {
-      console.log("ok");
       return false;
     }
     for (var i = 0; i < TAILLE_TABLEAU-2 ; i++) {
@@ -180,33 +179,164 @@
     */
   }
 
-  function get_position_bonbon(idBonbon){
+  function get_information_bonbon(idBonbon){
     for (var i = 0; i < TAILLE_TABLEAU ; i++) {
       for (var j = 0; j < TAILLE_TABLEAU ; j++) {
         if (tableauJeu[i][j].id == idBonbon) {
-          return [i,j]
+          return [i,j,tableauJeu[i][j].idCouleur]
         }
       }
+    }
+  }
+
+
+  function echanger_position_bonbon(bonbon1,bonbon2,informationBonbon1,informationBonbon2){
+    let bonbon3 = new Bonbon(bonbon1,informationBonbon1[2]);
+    tableauJeu[informationBonbon1[0]][informationBonbon1[1]] = new Bonbon(bonbon2,informationBonbon2[2]);
+    tableauJeu[informationBonbon2[0]][informationBonbon2[1]] = bonbon3;
+  }
+
+  function get_tableau_bonbons_a_supprimer_colonne(positionBonbon){
+    let positionX = positionBonbon[0];
+    let positionY = positionBonbon[1];
+    let bonbonSimilaire = true;
+    var tableauBonbonsASupprimer = [];
+    tableauBonbonsASupprimer.push([positionX,positionY]);
+    let i = 1;
+    while(bonbonSimilaire && positionY - i >= 0){
+      if (tableauJeu[positionX][positionY - i].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
+        tableauBonbonsASupprimer.push([positionX,positionY - i]);
+      }else{
+        bonbonSimilaire = false;
+      }
+      i++;
+    }
+    bonbonSimilaire = true;
+    i = 1;
+    while(bonbonSimilaire && positionY + i <= 7){
+      if (tableauJeu[positionX][positionY + i].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
+        tableauBonbonsASupprimer.push([positionX,positionY + i]);
+      }else{
+        bonbonSimilaire = false;
+      }
+      i++;
+    }
+    if (tableauBonbonsASupprimer.length < 3) {
+      tableauBonbonsASupprimer = [];
+    }
+    return tableauBonbonsASupprimer
+  }
+
+  function get_tableau_bonbons_a_supprimer_ligne(positionBonbon,tableauJeu){
+    let positionX = positionBonbon[0];
+    let positionY = positionBonbon[1];
+    var tableauBonbonsASupprimer = [];
+    tableauBonbonsASupprimer.push([positionX,positionY]);
+    let bonbonSimilaire = true;
+    let i = 1;
+    while(bonbonSimilaire && positionX - i >= 0){
+      if (tableauJeu[positionX - i][positionY].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
+        tableauBonbonsASupprimer.push([positionX - i,positionY]);
+      }else{
+        bonbonSimilaire = false;
+      }
+      i++;
+    }
+    bonbonSimilaire = true;
+    i = 1;
+    while(bonbonSimilaire && positionX + i <= 7){
+      if (tableauJeu[positionX + i][positionY].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
+        tableauBonbonsASupprimer.push([positionX + i,positionY]);
+      }else{
+        bonbonSimilaire = false;
+      }
+      i++;
+    }
+    if (tableauBonbonsASupprimer.length < 3) {
+      tableauBonbonsASupprimer = [];
+    }
+    return tableauBonbonsASupprimer
+  }
+
+  function get_tableau_positions_bonbons_a_supprimer(positionBonbon1,positionBonbon2){
+    let tableauBonbon1Colonne = get_tableau_bonbons_a_supprimer_colonne(positionBonbon1,tableauJeu);
+    let tableauBonbon2Colonne = get_tableau_bonbons_a_supprimer_colonne(positionBonbon2,tableauJeu);
+    let tableauBonbon1Ligne = get_tableau_bonbons_a_supprimer_ligne(positionBonbon1,tableauJeu);
+    let tableauBonbon2Ligne = get_tableau_bonbons_a_supprimer_ligne(positionBonbon2,tableauJeu);
+    let tableauDeToutLesBonbonsASupprimer = [];
+    if (tableauBonbon1Colonne.length >=3) {
+      for (var i = 0; i < tableauBonbon1Colonne.length ; i++) {
+        tableauDeToutLesBonbonsASupprimer.push(tableauBonbon1Colonne[i]);
+      }
+    }
+    if (tableauBonbon2Colonne.length >=3) {
+      for (var i = 0; i < tableauBonbon2Colonne.length ; i++) {
+        tableauDeToutLesBonbonsASupprimer.push(tableauBonbon2Colonne[i]);
+      }
+    }
+    if (tableauBonbon1Ligne.length >=3) {
+      for (var i = 0; i < tableauBonbon1Ligne.length ; i++) {
+        tableauDeToutLesBonbonsASupprimer.push(tableauBonbon1Ligne[i]);
+      }
+    }
+    if (tableauBonbon2Ligne.length >=3) {
+      for (var i = 0; i < tableauBonbon2Ligne.length ; i++) {
+        tableauDeToutLesBonbonsASupprimer.push(tableauBonbon2Ligne[i]);
+      }
+    }
+    return tableauDeToutLesBonbonsASupprimer;
+  }
+
+  function supprimer_bonbon(tableauBonbonsASupprimer){
+    vueJeu.afficher_tableau_jeu(tableauJeu);
+  }
+
+  function modifier_tableau_jeu_avec_selection(positionBonbon1,positionBonbon2,idBonbon){
+    if (est_bonbon_adjacent(bonbonSelectionner1,bonbonSelectionner2,positionBonbonSelectionner1,positionBonbonSelectionner2)) {
+      echanger_position_bonbon(bonbonSelectionner1,bonbonSelectionner2,positionBonbonSelectionner1,positionBonbonSelectionner2);
+      vueJeu.afficher_tableau_jeu(tableauJeu);
+      let tableauBonbonsASupprimer = get_tableau_positions_bonbons_a_supprimer(positionBonbonSelectionner1,positionBonbonSelectionner2);
+      supprimer_bonbon(tableauBonbonsASupprimer);
+      switch (tableauBonbonsASupprimer.length){
+        case 0:
+          set_progression(progression-3);
+          break;
+        case 3 :
+          set_progression(progression+3);
+          break;
+        case 4 : 
+          set_progression(progression+4);
+          break;
+        case 5 : 
+          set_progression(progression+5);
+          break;
+      }
+      supprimer_bonbon(tableauBonbonsASupprimer);
+      if (!verifier_tableau(tableauJeu)) {
+      }else{
+        echanger_position_bonbon(bonbonSelectionner1,bonbonSelectionner2,positionBonbonSelectionner1,positionBonbonSelectionner2);
+        vueJeu.afficher_tableau_jeu(tableauJeu);
+      }
+      creer_listener_bonbon(); 
     }
   }
 
   function selectionner_bonbon(idBonbon){
     nombreBonbonSelectionner++;
     if (nombreBonbonSelectionner == 1) {
-      positionBonbonSelectionner1 = get_position_bonbon(idBonbon);
+      positionBonbonSelectionner1 = get_information_bonbon(idBonbon);
       bonbonSelectionner1 = idBonbon;
       vueJeu.selectionner_bonbon(idBonbon);
     }
+
     if (nombreBonbonSelectionner == 2) {
-      positionBonbonSelectionner2 = get_position_bonbon(idBonbon);
+      positionBonbonSelectionner2 = get_information_bonbon(idBonbon);
       bonbonSelectionner2 = idBonbon;
       vueJeu.selectionner_bonbon(idBonbon);
-      if (est_bonbon_adjacent(bonbonSelectionner1,bonbonSelectionner2,positionBonbonSelectionner1,positionBonbonSelectionner2)) {
-        console.log("okok");
-      }
-      nombreBonbonSelectionner = 0;
+      modifier_tableau_jeu_avec_selection(bonbonSelectionner1,bonbonSelectionner2,idBonbon);
       vueJeu.deselectionner_bonbon(bonbonSelectionner1);
       vueJeu.deselectionner_bonbon(bonbonSelectionner2);
+      nombreBonbonSelectionner = 0;
     }
   }
 
