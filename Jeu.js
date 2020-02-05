@@ -10,6 +10,7 @@
   var bonbonSelectionner2;
   var positionBonbonSelectionner1;
   var positionBonbonSelectionner2;
+  var listeId = [];
 
   document.getElementById('newGame').addEventListener('click', function () {
     vueJeu.vider_tableau_jeu();
@@ -27,8 +28,7 @@
 
   function creer_listener_bonbon(){
     for (var i = 1; i <= TAILLE_TABLEAU*TAILLE_TABLEAU; i++) {
-      let idBonbon = i;
-      document.getElementById(i).addEventListener('click', function (e) {
+      document.getElementById(listeId[i]).addEventListener('click', function (e) {
         selectionner_bonbon(e.target.id);
       }); 
     }
@@ -46,6 +46,7 @@
   function generer_bonbon(){
     let idCouleur = Math.floor(Math.random() * 6) + 1;
     compteurIdBonbon++;
+    listeId.push(compteurIdBonbon);
     return new Bonbon(compteurIdBonbon,idCouleur);
   }
 
@@ -201,11 +202,12 @@
     let positionY = positionBonbon[1];
     let bonbonSimilaire = true;
     var tableauBonbonsASupprimer = [];
-    tableauBonbonsASupprimer.push([positionX,positionY]);
+    tableauBonbonsASupprimer.push(positionX,positionY);
     let i = 1;
     while(bonbonSimilaire && positionY - i >= 0){
       if (tableauJeu[positionX][positionY - i].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
-        tableauBonbonsASupprimer.push([positionX,positionY - i]);
+        tableauBonbonsASupprimer.push(positionX);
+        tableauBonbonsASupprimer.push(positionY - i);
       }else{
         bonbonSimilaire = false;
       }
@@ -215,7 +217,8 @@
     i = 1;
     while(bonbonSimilaire && positionY + i <= 7){
       if (tableauJeu[positionX][positionY + i].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
-        tableauBonbonsASupprimer.push([positionX,positionY + i]);
+        tableauBonbonsASupprimer.push(positionX);
+        tableauBonbonsASupprimer.push(positionY + i);
       }else{
         bonbonSimilaire = false;
       }
@@ -231,12 +234,13 @@
     let positionX = positionBonbon[0];
     let positionY = positionBonbon[1];
     var tableauBonbonsASupprimer = [];
-    tableauBonbonsASupprimer.push([positionX,positionY]);
+    tableauBonbonsASupprimer.push(positionX,positionY);
     let bonbonSimilaire = true;
     let i = 1;
     while(bonbonSimilaire && positionX - i >= 0){
       if (tableauJeu[positionX - i][positionY].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
-        tableauBonbonsASupprimer.push([positionX - i,positionY]);
+        tableauBonbonsASupprimer.push(positionX - i);
+        tableauBonbonsASupprimer.push(positionY);
       }else{
         bonbonSimilaire = false;
       }
@@ -246,7 +250,8 @@
     i = 1;
     while(bonbonSimilaire && positionX + i <= 7){
       if (tableauJeu[positionX + i][positionY].idCouleur == tableauJeu[positionX][positionY].idCouleur) {
-        tableauBonbonsASupprimer.push([positionX + i,positionY]);
+        tableauBonbonsASupprimer.push(positionX + i);
+        tableauBonbonsASupprimer.push(positionY);
       }else{
         bonbonSimilaire = false;
       }
@@ -288,6 +293,14 @@
   }
 
   function supprimer_bonbon(tableauBonbonsASupprimer){
+    let moitieTableau = tableauBonbonsASupprimer.length/2;
+    console.log(tableauBonbonsASupprimer);
+    for (var i = 0; i < moitieTableau ; i++) {
+      let idNouveauBonbon = tableauJeu[tableauBonbonsASupprimer[i]][tableauBonbonsASupprimer[i+1]].id;
+      console.log(i);
+      console.log(i+1);
+      tableauJeu[tableauBonbonsASupprimer[i+1]][tableauBonbonsASupprimer[i]] = new Bonbon(idNouveauBonbon,15);
+    }
     vueJeu.afficher_tableau_jeu(tableauJeu);
   }
 
@@ -297,19 +310,10 @@
       vueJeu.afficher_tableau_jeu(tableauJeu);
       let tableauBonbonsASupprimer = get_tableau_positions_bonbons_a_supprimer(positionBonbonSelectionner1,positionBonbonSelectionner2);
       supprimer_bonbon(tableauBonbonsASupprimer);
-      switch (tableauBonbonsASupprimer.length){
-        case 0:
-          set_progression(progression-3);
-          break;
-        case 3 :
-          set_progression(progression+3);
-          break;
-        case 4 : 
-          set_progression(progression+4);
-          break;
-        case 5 : 
-          set_progression(progression+5);
-          break;
+      if (tableauBonbonsASupprimer.length <= 3){
+        set_progression(progression - 3)
+      }else{
+        set_progression(progression + tableauBonbonsASupprimer.length)
       }
       supprimer_bonbon(tableauBonbonsASupprimer);
       if (!verifier_tableau(tableauJeu)) {
