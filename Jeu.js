@@ -192,11 +192,9 @@
 
 
   function echanger_position_bonbon(bonbon1,bonbon2,informationBonbon1,informationBonbon2){ 
-    bonbon3 = new Bonbon(parseInt(bonbon1),informationBonbon1[2]);
-    console.log(tableauJeu[informationBonbon2[0]][informationBonbon2[1]]);
-    tableauJeu[informationBonbon1[0]][informationBonbon1[1]] = new Bonbon(parseInt(bonbon2),informationBonbon2[2]);
+    let bonbon3 =  tableauJeu[informationBonbon1[0]][informationBonbon1[1]];
+    tableauJeu[informationBonbon1[0]][informationBonbon1[1]] = tableauJeu[informationBonbon2[0]][informationBonbon2[1]]
     tableauJeu[informationBonbon2[0]][informationBonbon2[1]] = bonbon3;
-    console.log(tableauJeu[informationBonbon2[0]][informationBonbon2[1]]);
   }
 
   function get_tableau_bonbons_a_supprimer_colonne(positionBonbon){
