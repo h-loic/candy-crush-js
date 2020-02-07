@@ -10,7 +10,7 @@
   var bonbonSelectionner2;
   var positionBonbonSelectionner1;
   var positionBonbonSelectionner2;
-  var listeId = [];
+  var listeId;
 
   document.getElementById('newGame').addEventListener('click', function () {
     vueJeu.vider_tableau_jeu();
@@ -19,6 +19,8 @@
 
   var initialiser_jeu = function() {
     nombreBonbonSelectionner = 0;
+    compteurIdBonbon = 0;
+    listeId = [];
     tableauJeu = [];
     set_tableau_jeu();
     vueJeu.afficher_tableau_jeu(tableauJeu);
@@ -27,7 +29,8 @@
   }
 
   function creer_listener_bonbon(){
-    for (var i = 1; i <= TAILLE_TABLEAU*TAILLE_TABLEAU; i++) {
+    console.log(listeId.length);
+    for (var i = 0; i < TAILLE_TABLEAU*TAILLE_TABLEAU; i++) {
       document.getElementById(listeId[i]).addEventListener('click', function (e) {
         selectionner_bonbon(e.target.id);
       }); 
@@ -85,10 +88,12 @@
     while (!verifier_tableau(tableauJeu)){
       compteurIdBonbon = 0;
       tableauJeu = [];
+      listeId = [];
       for (var i = 0; i < TAILLE_TABLEAU ; i++) {
         tableauJeu[i]=[];
         for (var j = 0; j < TAILLE_TABLEAU ; j++) {
           tableauJeu[i][j]=generer_bonbon();
+          console.log("ok");
         }
       }
     }
@@ -296,7 +301,7 @@
     let moitieTableau = tableauBonbonsASupprimer.length/2;
     for (var i = 0; i <= tableauBonbonsASupprimer.length-1 ; i+=2) {
       let idNouveauBonbon = tableauJeu[tableauBonbonsASupprimer[i]][tableauBonbonsASupprimer[i+1]].id;
-      tableauJeu[tableauBonbonsASupprimer[i]][tableauBonbonsASupprimer[i+1]] = new Bonbon(idNouveauBonbon,15);
+      tableauJeu[tableauBonbonsASupprimer[i]][tableauBonbonsASupprimer[i+1]] = new Bonbon(idNouveauBonbon,"none");
     }
     vueJeu.afficher_tableau_jeu(tableauJeu);
   }
@@ -309,12 +314,16 @@
       if (tableauBonbonsASupprimer.length < 6 ){
         echanger_position_bonbon(bonbonSelectionner2,bonbonSelectionner1,positionBonbonSelectionner2,positionBonbonSelectionner1);
         vueJeu.afficher_tableau_jeu(tableauJeu);
-        set_progression(progression - 3)
+        set_progression(progression - 3);
+        vueJeu.deselectionner_bonbon(bonbonSelectionner1);
+        vueJeu.deselectionner_bonbon(bonbonSelectionner2);
       }else{
-        set_progression(progression + tableauBonbonsASupprimer.length)
+        set_progression(progression + tableauBonbonsASupprimer.length);
+        supprimer_bonbon(tableauBonbonsASupprimer);
+        faire_tomber_bonbon();
+        vueJeu.afficher_tableau_jeu(tableauJeu);
+        creer_listener_bonbon(); 
       }
-      supprimer_bonbon(tableauBonbonsASupprimer);
-      creer_listener_bonbon(); 
     }
   }
 
@@ -331,11 +340,35 @@
       bonbonSelectionner2 = idBonbon;
       vueJeu.selectionner_bonbon(idBonbon);
       modifier_tableau_jeu_avec_selection(bonbonSelectionner1,bonbonSelectionner2,idBonbon);
-      vueJeu.deselectionner_bonbon(bonbonSelectionner1);
-      vueJeu.deselectionner_bonbon(bonbonSelectionner2);
       nombreBonbonSelectionner = 0;
     }
   }
+
+  function faire_tomber_bonbon(){
+    let videEnHaut = false;
+    while(!videEnHaut){
+      videEnHaut = true;
+      for (let i = 0; i < TAILLE_TABLEAU - 1; i++) {
+        for (let j = 0; j < TAILLE_TABLEAU ; j++) {
+          if (tableauJeu[i][j].idCouleur == "none") {
+            for(let k = 0; k < listeId.length; k++){ 
+              if ( listeId[k] == tableauJeu[i][j].id) {
+                listeId.splice(k, 1); 
+              }
+            }
+            tableauJeu[i][j] = generer_bonbon();
+          }
+          if (tableauJeu[i+1][j].idCouleur == "none") {
+            let bonbon3 =  tableauJeu[i+1][j];
+            tableauJeu[i+1][j] = tableauJeu[i][j];
+            tableauJeu[i][j] = bonbon3;
+            videEnHaut = false;
+          }
+       }
+      }
+    }
+  }
+
 
   initialiser_jeu();
 
